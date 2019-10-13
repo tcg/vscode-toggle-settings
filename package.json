@@ -15,23 +15,22 @@
     "commands": [
       {
         "command": "extension.main",
-        "title": "Hello World"
+        "title": "Toggle Settings"
+      },
+      {
+        "command": "extension.reset",
+        "title": "Toggle Settings - Reset state"
       }
     ],
     "configuration": {
       "title": "ToggleSettingsChanges",
       "properties": {
-        // "toggleSettingsChanges.settingsToToggle": {
-        //   "type": "string",
-        //   "default": "window.zoomLevel,editor.fontSize,editor.cursorBlinking",
-        //   "description": "Comma separated list of {setting_name}:{value} pairs to set when toggled."
-        // }
-        "toggleSettingsChanges.settingsAreToggled": {
-          "scope": "resource",
-          "type": "boolean",
-          "default": false,
-          "description": "Whether the currently used settings are in a toggled state. DO NOT EDIT BY HAND."
-        },
+        // "toggleSettingsChanges.settingsAreToggled": {
+        //   "scope": "resource",
+        //   "type": "boolean",
+        //   "default": false,
+        //   "description": "Whether the currently used settings are in a toggled state. DO NOT EDIT BY HAND."
+        // },
         "toggleSettingsChanges.settingsToToggle": {
           "scope": "resource",
           "type": "object",
