@@ -25,7 +25,7 @@ function activate(context) {
 	// Now provide the implementation of the command with  registerCommand
 	// The commandId parameter must match the command field in package.json
 	let disposable = vscode.commands.registerCommand('extension.main', () => {
-		// The code you place here will be executed every time your command is executed
+        // The code you place here will be executed every time your command is executed
 
 		// Display a message box to the user
         // vscode.window.showInformationMessage('Hello World!');
@@ -34,14 +34,15 @@ function activate(context) {
 
     context.subscriptions.push(disposable);
 
-    let disposable = vscode.commands.registerCommand('extension.reset', ()=>{
+    /**
+     * Bonus: Just in case stored state gets messed up while we're in Alpha:
+     */
+    context.subscriptions.push(vscode.commands.registerCommand('extension.reset', () => {
         globalState.update(STATE_VALUES_KEY, undefined);
         globalState.update(SETTINGS_ARE_TOGGLED_KEY, undefined);
         console.log("EXTENSION STATE VALUES RESET")
-    });
-    context.subscriptions.push(disposable);
+    }));
 }
-
 
 
 /**
@@ -74,7 +75,7 @@ function main(state) {
                 // Per the docs, undefined "unsets" a value. That's useful later.
                 let currentConfigReadValue = config.get(key, undefined)
                 console.log(`Current value in config: ${currentConfigReadValue}`)
-                updatedStateValues = Object.assign(updatedStateValues, {key: currentConfigReadValue})
+                updatedStateValues = Object.assign(updatedStateValues, {[key]: currentConfigReadValue})
             }
         );
         state.update(STATE_VALUES_KEY, updatedStateValues);
@@ -99,7 +100,7 @@ function main(state) {
         // some new settings were added since we stored them as state:
         Object.keys(settingsToToggle).forEach((key)=>{
             if (!(key in oldStateValues)) {
-                updatedStateValues = Object.assign(updatedStateValues, {key: settingsToToggle[key]})
+                updatedStateValues = Object.assign(updatedStateValues, {[key]: settingsToToggle[key]})
                 console.log("Added to nonexistent state values:", JSON.stringify(updatedStateValues))
             }
         })
@@ -117,25 +118,12 @@ function main(state) {
         // Set that we have un-toggled settings:
         state.update(SETTINGS_ARE_TOGGLED_KEY, false)
     }
-
-    /**/
-    // STREAMING SETTINGS.
-    // HT: KCD https://www.youtube.com/watch?v=IHMkIdmvD9c
-    /*
-    "window.zoomlevel": 2, // default: 0
-    "editor.fontSize": 22, // 12
-    "terminal.integrated.fontSize": 16, // 12
-    "scm.diffDecorations": "none", // "all"
-    "workbench.statusBar.visible": false, // true
-    "editor.cursorBlinking": "solid" // blink
-    /**/
-
-    vscode.window.showInformationMessage('Hello MAIN!');
 }
 
 
 // this method is called when your extension is deactivated
 function deactivate() {}
+
 
 module.exports = {
 	activate,
