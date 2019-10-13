@@ -3,12 +3,13 @@
   "description": "Toggle specific settings changes",
   "version": "0.0.1",
   "publisher": "tcg",
-  "repository": "https://github.com/tcg/...",
+  "repository": "https://github.com/tcg/vscode-toggle-settings",
   "engines": {
     "vscode": "^1.32.0"
   },
   "activationEvents": [
-    "onCommand:extension.main"
+    "onCommand:extension.main",
+    "onCommand:extension.reset" // Docs indicate this might not be necessary, but the Palette command doesn't load if not here.
   ],
   "main": "./extension.js",
   "contributes": {
@@ -25,24 +26,18 @@
     "configuration": {
       "title": "ToggleSettingsChanges",
       "properties": {
-        // "toggleSettingsChanges.settingsAreToggled": {
-        //   "scope": "resource",
-        //   "type": "boolean",
-        //   "default": false,
-        //   "description": "Whether the currently used settings are in a toggled state. DO NOT EDIT BY HAND."
-        // },
         "toggleSettingsChanges.settingsToToggle": {
           "scope": "resource",
           "type": "object",
           "default":
               {
                   "window.zoomLevel": 2, // default: 0
-                  // "editor.fontSize": 22, // 12
-                  // "terminal.integrated.fontSize": 16, // 12
-                  // "scm.diffDecorations": "none", // "all"
-                  // "workbench.statusBar.visible": false, // true
-                  // "editor.cursorBlinking": "solid", // blink
-                  // "workbench.activityBar.visible": false
+                  "editor.fontSize": 22, // 12
+                  "terminal.integrated.fontSize": 16, // 12
+                  "scm.diffDecorations": "none", // "all"
+                  "workbench.statusBar.visible": false, // true
+                  "editor.cursorBlinking": "solid", // blink
+                  "workbench.activityBar.visible": false
               }
           ,
           "description": "An object with the setting name as the object key and the setting value (string, boolean, object, etc.) as the object value."
