@@ -14,8 +14,7 @@ const SETTINGS_TO_TOGGLE_KEY = 'toggleSettingsChanges.settingsToToggle'
  */
 function activate(context) {
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension is now active!');
+	// This <del>line of</del> code will only be executed once when your extension is activated
 
     // Get our previous storage state:
     const globalState = context.globalState; // .get("toggleSettingsChanges.state", {})
@@ -40,7 +39,6 @@ function activate(context) {
     context.subscriptions.push(vscode.commands.registerCommand('extension.reset', () => {
         globalState.update(STATE_VALUES_KEY, undefined);
         globalState.update(SETTINGS_ARE_TOGGLED_KEY, undefined);
-        console.log("EXTENSION STATE VALUES RESET")
     }));
 }
 
@@ -57,8 +55,8 @@ function main(state) {
     const settingsAreToggled = state.get(SETTINGS_ARE_TOGGLED_KEY, false);
 
     if (oldStateValues) {
-        console.log("Previous State values discovered.");
-        console.log("Old State:", JSON.stringify(oldStateValues))
+        // console.log("Previous State values discovered.");
+        // console.log("Old State:", JSON.stringify(oldStateValues))
     }
 
     let updatedStateValues = oldStateValues;
@@ -66,52 +64,41 @@ function main(state) {
     // If state is NOT toggled when we run, we should just store ALL
     // of the default values for the settings we're going to toggle:
     if (settingsAreToggled === false) {
-        console.log("settingsAreToggled: FALSE")
 
         // Set state to the previous values:
         Object.keys(settingsToToggle).forEach(
             (key) => {
-                console.log(`Reading key ${key} of settingsToToggle.`)
                 // Per the docs, undefined "unsets" a value. That's useful later.
                 let currentConfigReadValue = config.get(key, undefined)
-                console.log(`Current value in config: ${currentConfigReadValue}`)
                 updatedStateValues = Object.assign(updatedStateValues, {[key]: currentConfigReadValue})
             }
         );
         state.update(STATE_VALUES_KEY, updatedStateValues);
-        console.log("State VALUES stored as:", JSON.stringify(updatedStateValues))
 
         // Flip all relevant settings to new values:
         Object.keys(settingsToToggle).forEach(
             (key) => {
-                console.log(`Updating CONFIG key ${key} to value: ${updatedStateValues[key]}`)
                 config.update(key, settingsToToggle[key], true)
             }
         );
         // Set that we HAVE toggled settings:
         state.update(SETTINGS_ARE_TOGGLED_KEY, true)
-
-        console.log("Settings updated to:", JSON.stringify(settingsToToggle))
     }
 
     if (settingsAreToggled === true) {
-        console.log("settingsAreToggled: TRUE")
         // If the settings *are* toggled, we still need to check JUST IN CASE
         // some new settings were added since we stored them as state:
         Object.keys(settingsToToggle).forEach((key)=>{
             if (!(key in oldStateValues)) {
                 updatedStateValues = Object.assign(updatedStateValues, {[key]: settingsToToggle[key]})
-                console.log("Added to nonexistent state values:", JSON.stringify(updatedStateValues))
             }
         })
         // Set state to the previous (w/ possibly updated) values:
         state.update(STATE_VALUES_KEY, updatedStateValues)
-        console.log("State VALUES stored as:", JSON.stringify(updatedStateValues))
 
         // Flip all relevant settings BACK to stored values:
         Object.keys(settingsToToggle).forEach(
             (key) => {
-                console.log(`Updating CONFIG key ${key} to value: ${updatedStateValues[key]}`)
                 config.update(key, updatedStateValues[key], true)
             }
         );
