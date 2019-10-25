@@ -118,21 +118,6 @@ const main = state => {
     });
     state.update(STATE_VALUES_KEY, updatedStateValues);
 
-    // Flip all relevant settings to new values:
-    Object.keys(settingsToToggle).forEach(async key => {
-      // config.update(key, settingsToToggle[key])
-      const resultObj = await updateMostGranularSetting(
-        config,
-        key,
-        settingsToToggle[key]
-      );
-
-      if (resultObj.global) {
-        vscode.window.showInformationMessage(
-          SETTINGS_ARE_TOGGLED_MESSAGE
-        );
-      }
-    });
     // Set that we HAVE toggled settings:
     state.update(SETTINGS_ARE_TOGGLED_KEY, true);
   }
@@ -149,24 +134,25 @@ const main = state => {
     // Set state to the previous (w/ possibly updated) values:
     state.update(STATE_VALUES_KEY, updatedStateValues);
 
-    // Flip all relevant settings BACK to stored values:
-    Object.keys(settingsToToggle).forEach(async key => {
-      // config.update(key, updatedStateValues[key])
-      const resultObj = await updateMostGranularSetting(
-        config,
-        key,
-        updatedStateValues[key]
-      );
-      if (resultObj.global) {
-        vscode.window.showInformationMessage(
-          SETTINGS_ARE_TOGGLED_MESSAGE
-        );
-      }
-    });
-
     // Set that we have un-toggled settings:
     state.update(SETTINGS_ARE_TOGGLED_KEY, false);
   }
+  
+  // Flip all relevant settings to new values:
+  Object.keys(settingsToToggle).forEach(async key => {
+    // config.update(key, settingsToToggle[key])
+    const resultObj = await updateMostGranularSetting(
+      config,
+      key,
+      settingsToToggle[key]
+    );
+
+    if (resultObj.global) {
+      vscode.window.showInformationMessage(
+        SETTINGS_ARE_TOGGLED_MESSAGE
+      );
+    }
+  });
 };
 
 // this method is called when your extension is deactivated
