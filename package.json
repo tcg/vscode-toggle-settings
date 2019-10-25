@@ -4,6 +4,15 @@
   "version": "0.0.8",
   "publisher": "JohnReaganPublisher",
   "repository": "https://github.com/tcg/vscode-toggle-settings",
+  "license": "MIT",
+  "homepage": "https://github.com/tcg/vscode-toggle-settings",
+  "bugs": {
+    "url": "https://github.com/tcg/vscode-toggle-settings/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tcg/vscode-toggle-settings"
+  },
   "engines": {
     "vscode": "^1.32.0"
   },
