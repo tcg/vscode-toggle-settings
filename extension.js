@@ -8,6 +8,9 @@ const SETTINGS_ARE_TOGGLED_KEY =
 const STATE_VALUES_KEY = "toggleSettingsChanges.state.values";
 const SETTINGS_TO_TOGGLE_KEY = "toggleSettingsChanges.settingsToToggle";
 
+// Message used for config setting change
+const SETTINGS_ARE_TOGGLED_MESSAGE =
+      "Settings were toggled Globally, for lack of an active Workspace.";
 /**
  * Update a given Setting key/value, in the most granular place.
  * E.g., defaults to updating the setting in the workspace/folder, then
@@ -126,7 +129,7 @@ const main = state => {
 
       if (resultObj.global) {
         vscode.window.showInformationMessage(
-          "Settings were toggled Globally, for lack of an active Workspace."
+          SETTINGS_ARE_TOGGLED_MESSAGE
         );
       }
     });
@@ -156,7 +159,7 @@ const main = state => {
       );
       if (resultObj.global) {
         vscode.window.showInformationMessage(
-          "Settings were toggled Globally, for lack of an active Workspace."
+          SETTINGS_ARE_TOGGLED_MESSAGE
         );
       }
     });
