@@ -1,17 +1,16 @@
 {
   "name": "toggle-settings-changes",
   "description": "A settings toggler that doesn't require configuration for both states. It will use your existing settings (or default) values for the settings you configure to toggle, and switch between those and your configured values.",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "publisher": "JohnReaganPublisher",
-  "repository": "https://github.com/tcg/vscode-toggle-settings",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tcg/vscode-toggle-settings"
+  },
   "license": "MIT",
   "homepage": "https://github.com/tcg/vscode-toggle-settings",
   "bugs": {
     "url": "https://github.com/tcg/vscode-toggle-settings/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/tcg/vscode-toggle-settings"
   },
   "engines": {
     "vscode": "^1.32.0"
