@@ -117,9 +117,6 @@ const main = state => {
       });
     });
     state.update(STATE_VALUES_KEY, updatedStateValues);
-
-    // Set that we HAVE toggled settings:
-    state.update(SETTINGS_ARE_TOGGLED_KEY, true);
   }
   if (settingsAreToggled === true) {
     // If the settings *are* toggled, we still need to check JUST IN CASE
@@ -133,11 +130,9 @@ const main = state => {
     });
     // Set state to the previous (w/ possibly updated) values:
     state.update(STATE_VALUES_KEY, updatedStateValues);
-
-    // Set that we have un-toggled settings:
-    state.update(SETTINGS_ARE_TOGGLED_KEY, false);
   }
   
+  var resultObjs;
   // Flip all relevant settings to new values:
   Object.keys(settingsToToggle).forEach(async key => {
     // config.update(key, settingsToToggle[key])
@@ -146,13 +141,17 @@ const main = state => {
       key,
       settingsToToggle[key]
     );
-
-    if (resultObj.global) {
-      vscode.window.showInformationMessage(
-        SETTINGS_ARE_TOGGLED_MESSAGE
-      );
-    }
+    resultObjs.push(resultObj);
   });
+  
+  if (resultObjs.some((resultObj) => { return resultObj.global;})) {
+    vscode.window.showInformationMessage(
+      SETTINGS_ARE_TOGGLED_MESSAGE
+    );
+  }
+  
+  //Set/unset toggeled switch
+  state.update(SETTINGS_ARE_TOGGLED_KEY, !settingsAreToggled);
 };
 
 // this method is called when your extension is deactivated
