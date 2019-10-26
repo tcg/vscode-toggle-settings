@@ -13,7 +13,7 @@ object should contain the keys/values of specific settings that you want to
 toggle *to*. No need to specify the "un-toggled" state, as this extension
 uses your existing (or default) settings values when switching back.
 
-Here's an example (and in fact, the default settings that will be toggled):
+Here's an example of the settings I use (based on settings that [kentcdodds](https://github.com/kentcdodds) shows [for doing screencasts](https://www.youtube.com/watch?v=IHMkIdmvD9c)):
 
 ```json
 "toggleSettingsChanges.settingsToToggle": {
@@ -27,11 +27,9 @@ Here's an example (and in fact, the default settings that will be toggled):
 }
 ```
 
-Once the exntension is installed, it creates a VS Code Command that becomes
-available in the Command Palette.
+Once the extension is installed, it creates a VS Code Command that becomes available in the Command Palette.
 
-You can activate the command, and toggle the assigned settings, by finding
-it in the Command Palette, named "Toggle Settings".
+You can activate the command, and toggle the assigned settings, by finding it in the Command Palette, named "Toggle Settings".
 
 You can further customize this by adding your own keybinding for that command.
 
@@ -43,6 +41,7 @@ Thanks to [Cody](https://github.com/hoovercj) for open-sourcing [SettingsCycler]
 **Includes contributions from:**
 
 * [logiclrd](https://github.com/logiclrd)
+
 
 ## Development
 
