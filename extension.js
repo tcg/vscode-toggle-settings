@@ -8,10 +8,14 @@ const SETTINGS_ARE_TOGGLED_KEY =
 const STATE_VALUES_KEY = "toggleSettingsChanges.state.values";
 const SETTINGS_TO_TOGGLE_KEY = "toggleSettingsChanges.settingsToToggle";
 
+// Message used for config setting change
+const SETTINGS_ARE_TOGGLED_MESSAGE =
+  "Settings were toggled Globally, for lack of an active Workspace.";
+
 /**
  * Update a given Setting key/value, in the most granular place.
  * E.g., defaults to updating the setting in the workspace/folder, then
- * workspace, then finally *globally* updates the setting, if VSCode throws
+ * workspace, then finally *globally* updates the setting, if VS Code throws
  * on the other attempt(s).
  *
  * TODO: This feels jankyyyyy!
@@ -75,6 +79,7 @@ function activate(context) {
 
   /**
    * Bonus: Just in case stored state gets messed up while we're in Alpha:
+   * This command allows us to reset the stored state to empty values.
    */
   context.subscriptions.push(
     vscode.commands.registerCommand("extension.reset", () => {
@@ -83,6 +88,89 @@ function activate(context) {
     })
   );
 }
+
+const toggleSettingsToCustomValues = (
+  settingsToToggle,
+  stateValues,
+  workspaceConfiguration,
+  globalState
+) => {
+  // Set state to the previous/existing values:
+  Object.keys(settingsToToggle).forEach(key => {
+    // Per the docs, undefined "unsets" a value.
+    // We'll use this as a way to unset values that might
+    // no longer exist.
+    const currentConfigReadValue = workspaceConfiguration.get(key, undefined);
+    stateValues = Object.assign(stateValues, {
+      [key]: currentConfigReadValue
+    });
+  });
+  globalState.update(STATE_VALUES_KEY, stateValues);
+
+  // Flip all relevant settings to new values:
+  const resultObjsPromises = Object.keys(settingsToToggle).map(key => {
+    console.log(`Updating key:${key} to value:${settingsToToggle[key]}`);
+    return updateMostGranularSetting(
+      workspaceConfiguration,
+      key,
+      settingsToToggle[key]
+    );
+  });
+  // Wait for all of the above async results before checking them:
+  Promise.all(resultObjsPromises).then(resultObjs => {
+    if (
+      resultObjs.some(resultObj => {
+        return resultObj.global;
+      })
+    ) {
+      // If any of our settings were changed *globally*, emit a UI
+      // message to let the user know:
+      vscode.window.showInformationMessage(SETTINGS_ARE_TOGGLED_MESSAGE);
+    }
+  });
+};
+
+const toggleSettingsToOriginalDefaults = (
+  settingsToToggle,
+  stateValues,
+  workspaceConfiguration,
+  globalState
+) => {
+  // If the settings *are* toggled, we still need to pull in and store
+  // any new settings that were added since we stored them as state:
+  let updatedStateValues = stateValues;
+  Object.keys(settingsToToggle).forEach(key => {
+    if (!(key in stateValues)) {
+      updatedStateValues = Object.assign(updatedStateValues, {
+        [key]: settingsToToggle[key]
+      });
+    }
+  });
+  // Set state to the previous (w/ possibly updated) values:
+  globalState.update(STATE_VALUES_KEY, updatedStateValues);
+
+  // Flip all relevant settings BACK to stored/STATE values:
+  const resultObjsPromises = Object.keys(settingsToToggle).map(key => {
+    console.log(`Updating key:${key} to value:${updatedStateValues[key]}`);
+    return updateMostGranularSetting(
+      workspaceConfiguration,
+      key,
+      updatedStateValues[key] // This is not the same as `settingsToToggle[key]`
+    );
+  });
+  // Wait for all of the above async results before checking them:
+  Promise.all(resultObjsPromises).then(resultObjs => {
+    if (
+      resultObjs.some(resultObj => {
+        return resultObj.global;
+      })
+    ) {
+      // If any of our settings were changed *globally*, emit a UI
+      // message to let the user know:
+      vscode.window.showInformationMessage(SETTINGS_ARE_TOGGLED_MESSAGE);
+    }
+  });
+};
 
 /**
  *
@@ -95,75 +183,24 @@ const main = state => {
   const oldStateValues = state.get(STATE_VALUES_KEY, {});
   const settingsAreToggled = state.get(SETTINGS_ARE_TOGGLED_KEY, false);
 
-  if (oldStateValues) {
-    // console.log("Previous State values discovered.");
-    // console.log("Old State:", JSON.stringify(oldStateValues))
-  }
-
-  let updatedStateValues = oldStateValues;
-
-  // If state is NOT toggled when we run, we should just store ALL
-  // of the default values for the settings we're going to toggle:
   if (settingsAreToggled === false) {
-    // Set state to the previous values:
-    Object.keys(settingsToToggle).forEach(key => {
-      // Per the docs, undefined "unsets" a value. That's useful later.
-      let currentConfigReadValue = config.get(key, undefined);
-      updatedStateValues = Object.assign(updatedStateValues, {
-        [key]: currentConfigReadValue
-      });
-    });
-    state.update(STATE_VALUES_KEY, updatedStateValues);
-
-    // Flip all relevant settings to new values:
-    Object.keys(settingsToToggle).forEach(async key => {
-      // config.update(key, settingsToToggle[key])
-      const resultObj = await updateMostGranularSetting(
-        config,
-        key,
-        settingsToToggle[key]
-      );
-
-      if (resultObj.global) {
-        vscode.window.showInformationMessage(
-          "Settings were toggled Globally, for lack of an active Workspace."
-        );
-      }
-    });
-    // Set that we HAVE toggled settings:
-    state.update(SETTINGS_ARE_TOGGLED_KEY, true);
+    toggleSettingsToCustomValues(
+      settingsToToggle,
+      oldStateValues,
+      config,
+      state
+    );
+  } else {
+    toggleSettingsToOriginalDefaults(
+      settingsToToggle,
+      oldStateValues,
+      config,
+      state
+    );
   }
-  if (settingsAreToggled === true) {
-    // If the settings *are* toggled, we still need to check JUST IN CASE
-    // some new settings were added since we stored them as state:
-    Object.keys(settingsToToggle).forEach(key => {
-      if (!(key in oldStateValues)) {
-        updatedStateValues = Object.assign(updatedStateValues, {
-          [key]: settingsToToggle[key]
-        });
-      }
-    });
-    // Set state to the previous (w/ possibly updated) values:
-    state.update(STATE_VALUES_KEY, updatedStateValues);
 
-    // Flip all relevant settings BACK to stored values:
-    Object.keys(settingsToToggle).forEach(async key => {
-      // config.update(key, updatedStateValues[key])
-      const resultObj = await updateMostGranularSetting(
-        config,
-        key,
-        updatedStateValues[key]
-      );
-      if (resultObj.global) {
-        vscode.window.showInformationMessage(
-          "Settings were toggled Globally, for lack of an active Workspace."
-        );
-      }
-    });
-
-    // Set that we have un-toggled settings:
-    state.update(SETTINGS_ARE_TOGGLED_KEY, false);
-  }
+  //Set/unset toggeled switch
+  state.update(SETTINGS_ARE_TOGGLED_KEY, !settingsAreToggled);
 };
 
 // this method is called when your extension is deactivated
