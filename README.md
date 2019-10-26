@@ -41,7 +41,7 @@ Thanks to [Cody](https://github.com/hoovercj) for open-sourcing [SettingsCycler]
 **Includes contributions from:**
 
 * [logiclrd](https://github.com/logiclrd)
-
+* [harshalkh](https://github.com/harshalkh)
 
 ## Development
 
