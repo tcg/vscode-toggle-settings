@@ -16,18 +16,18 @@
     "vscode": "^1.32.0"
   },
   "activationEvents": [
-    "onCommand:extension.main",
-    "onCommand:extension.reset"
+    "onCommand:toggleSettingsChanges.toggle",
+    "onCommand:toggleSettingsChanges.resetState"
   ],
   "main": "./extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "extension.main",
+        "command": "toggleSettingsChanges.toggle",
         "title": "Toggle Settings"
       },
       {
-        "command": "extension.reset",
+        "command": "toggleSettingsChanges.resetState",
         "title": "Toggle Settings - Reset state"
       }
     ],
