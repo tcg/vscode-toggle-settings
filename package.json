@@ -37,15 +37,7 @@
         "toggleSettingsChanges.settingsToToggle": {
           "scope": "resource",
           "type": "object",
-          "default": {
-            "window.zoomLevel": 2,
-            "editor.fontSize": 22,
-            "terminal.integrated.fontSize": 16,
-            "scm.diffDecorations": "none",
-            "workbench.statusBar.visible": false,
-            "editor.cursorBlinking": "solid",
-            "workbench.activityBar.visible": false
-          },
+          "default": {},
           "description": "An object with the setting name as the object key and the setting value (string, boolean, object, etc.) as the object value."
         }
       }
