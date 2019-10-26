@@ -1,7 +1,7 @@
 {
   "name": "toggle-settings-changes",
   "description": "A settings toggler that doesn't require configuration for both states. It will use your existing settings (or default) values for the settings you configure to toggle, and switch between those and your configured values.",
-  "version": "0.0.9",
+  "version": "1.0.0",
   "publisher": "JohnReaganPublisher",
   "repository": {
     "type": "git",
