@@ -67,7 +67,7 @@ function activate(context) {
   // The command has been defined in the package.json file
   // Now provide the implementation of the command with  registerCommand
   // The commandId parameter must match the command field in package.json
-  let disposable = vscode.commands.registerCommand("extension.main", () => {
+  let disposable = vscode.commands.registerCommand("toggleSettingsChanges.toggle", () => {
     // The code you place here will be executed every time your command is executed
 
     // Display a message box to the user
@@ -82,7 +82,7 @@ function activate(context) {
    * This command allows us to reset the stored state to empty values.
    */
   context.subscriptions.push(
-    vscode.commands.registerCommand("extension.reset", () => {
+    vscode.commands.registerCommand("toggleSettingsChanges.resetState", () => {
       globalState.update(STATE_VALUES_KEY, undefined);
       globalState.update(SETTINGS_ARE_TOGGLED_KEY, undefined);
     })
