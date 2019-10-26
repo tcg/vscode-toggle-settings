@@ -40,6 +40,9 @@ You can further customize this by adding your own keybinding for that command.
 
 Thanks to [Cody](https://github.com/hoovercj) for open-sourcing [SettingsCycler](https://github.com/hoovercj/vscode-api-playground/tree/master/SettingsCycler), which got me started down this road. That code was very helpful to get this up and running.
 
+**Includes contributions from:**
+
+* [logiclrd](https://github.com/logiclrd)
 
 ## Development
 
