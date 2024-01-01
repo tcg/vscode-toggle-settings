@@ -7,7 +7,7 @@ Personally, I wanted this flexibility. If you don't need that, I suggest checkin
 
 ## How to use this extension
 
-Install it from the [Maketplace](https://marketplace.visualstudio.com/items?itemName=JohnReaganPublisher.toggle-settings-changes).
+Install it from the [Marketplace](https://marketplace.visualstudio.com/items?itemName=JohnReaganPublisher.toggle-settings-changes).
 
 Edit the Global, User, or Workspace settings file of your choice, and add an
 entry for `toggleSettingsChanges.settingsToToggle` with an object value. That
